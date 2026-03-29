@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Church Event Planner</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">✝</span>
+        <div>
+          <h1>Church Event Planner</h1>
+          <p>Fasemkye-powered scheduler</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div id="userInfo" class="user-info hidden">
+          <span class="user-avatar">👤</span>
+          <span id="userName"></span>
+          <button class="btn btn-ghost" id="signOutBtn">Sign Out</button>
+        </div>
+        <button class="btn btn-ghost" id="signInHeaderBtn">Admin Sign In</button>
+        <button class="btn btn-primary admin-only hidden" id="newEventBtn">+ New Event</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="events">Events</button>
+    <button class="tab" data-tab="reminders">Reminders</button>
+    <button class="tab" data-tab="invitations">Invitations</button>
+  </nav>
+
+  <main>
+    <!-- Dashboard -->
+    <section id="dashboard" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">📅</span>
+          <div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-label">Total Events</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔔</span>
+          <div>
+            <div class="stat-value" id="statReminders">0</div>
+            <div class="stat-label">Reminders Set</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📨</span>
+          <div>
+            <div class="stat-value" id="statInvites">0</div>
+            <div class="stat-label">Invitations Sent</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⚠️</span>
+          <div>
+            <div class="stat-value" id="statConflicts">0</div>
+            <div class="stat-label">Conflicts Detected</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Upcoming Events</div>
+      <div id="upcomingEvents" class="events-list"></div>
+    </section>
+
+    <!-- Events -->
+    <section id="events" class="tab-content">
+      <div class="toolbar">
+        <input type="text" id="searchEvents" placeholder="Search events..." class="search-input" />
+        <select id="filterCategory" class="select-input">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+      <div id="eventsList" class="events-list"></div>
+    </section>
+
+    <!-- Reminders -->
+    <section id="reminders" class="tab-content">
+      <div class="section-title">enerated Reminder Schedules</div>
+      <p class="section-desc">Select an event to view its smart reminder schedule.</p>
+      <select id="reminderEventSelect" class="select-input full-width"></select>
+      <div id="reminderSchedule" class="reminder-schedule"></div>
+    </section>
+
+    <!-- Invitations -->
+    <section id="invitations" class="tab-content">
+      <div class="section-title">Invitation Composer</div>
+      <p class="section-desc">Generate personalized invitations for any event.</p>
+      <div class="invitation-controls">
+        <select id="inviteEventSelect" class="select-input"></select>
+        <select id="inviteStyle" class="select-input">
+          <option value="formal">Formal</option>
+          <option value="casual">Casual</option>
+          <option value="sms">SMS / Short</option>
+        </select>
+        <button class="btn btn-primary" id="generateInviteBtn">Generate</button>
+      </div>
+      <div id="invitationOutput" class="invitation-output hidden">
+        <div class="invitation-header">
+          <span>Generated Invitation</span>
+          <button class="btn btn-sm" id="copyInviteBtn">Copy</button>
+        </div>
+        <pre id="invitationText"></pre>
+      </div>
+    </section>
+  </main>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">New Event</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <form id="eventForm">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Event Title</label>
+            <input type="text" id="eventTitle" required placeholder="e.g. Sunday Worship Service" />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="eventCategory" required></select>
+          </div>
+          <div class="form-group">
+            <label>Venue</label>
+            <select id="eventVenue" required></select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="eventDate" required />
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            <input type="time" id="eventTime" required />
+          </div>
+          <div class="form-group">
+            <label>Duration (minutes)</label>
+            <input type="number" id="eventDuration" value="60" min="15" step="15" required />
+          </div>
+          <div class="form-group">
+            <label>Recurring</label>
+            <select id="eventRecurring">
+              <option value="none">One-time</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Bi-weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Description</label>
+            <textarea id="eventDescription" rows="3" placeholder="Brief description of the event..."></textarea>
+          </div>
+        </div>
+
+        <div id="aiSuggestions" class="ai-suggestions hidden">
+          <div class="ai-label">🤖 Suggestions</div>
+          <div id="conflictWarning" class="conflict-warning hidden"></div>
+          <div id="timeSuggestions" class="time-suggestions hidden">
+            <p>Available time slots for this venue:</p>
+            <div id="slotButtons" class="slot-buttons"></div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button>
+          <button type="button" class="btn btn-outline" id="checkConflictsBtn">Check Conflicts</button>
+          <button type="submit" class="btn btn-primary">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal hidden">
+    <div class="modal-overlay" id="authOverlay"></div>
+    <div class="modal-content auth-modal-content">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth="signin">Sign In</button>
+        <button class="auth-tab" data-auth="signup">Sign Up</button>
+      </div>
+
+      <!-- Sign In -->
+      <form id="signInForm" class="auth-form">
+        <div class="auth-header">
+          <span class="auth-icon">🔐</span>
+          <h2>Admin Sign In</h2>
+          <p>Access is restricted to registered admins.</p>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="siEmail" required placeholder="admin@church.org" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="siPassword" required placeholder="••••••••" />
+        </div>
+        <div id="siError" class="auth-error hidden"></div>
+        <button type="submit" class="btn btn-primary full-width">Sign In</button>
+      </form>
+
+      <!-- Sign Up -->
+      <form id="signUpForm" class="auth-form hidden">
+        <div class="auth-header">
+          <span class="auth-icon">✝</span>
+          <h2>Create Admin Account</h2>
+          <p>Register as a church event administrator.</p>
+        </div>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="suName" required placeholder="Pastor John" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="suEmail" required placeholder="admin@church.org" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="suPassword" required placeholder="Min. 6 characters" minlength="6" />
+        </div>
+        <div id="suError" class="auth-error hidden"></div>
+        <button type="submit" class="btn btn-primary full-width">Create Account</button>
+      </form>
+
+      <button class="modal-close auth-close" id="closeAuthModal">&times;</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
