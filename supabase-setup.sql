@@ -10,6 +10,7 @@ create table if not exists events (
   duration integer not null default 60,
   recurring text not null default 'none',
   description text,
+  address text,
   created_by uuid references auth.users(id),
   created_at timestamptz default now()
 );

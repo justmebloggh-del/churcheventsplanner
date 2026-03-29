@@ -3,7 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Church Event Planner</title>
+
+  <!-- Primary SEO -->
+  <title>Event Planner — Upcoming Services, Events &amp; Gatherings</title>
+  <meta name="description" content="Find upcoming church events, worship services, youth programs, and community gatherings. View schedules, get directions, and share events with friends." />
+  <meta name="keywords" content="church events, worship service, sunday service, church near me, youth group, bible study, community events, church schedule" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://your-church-domain.com/" />
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Church Event Planner — Upcoming Services &amp; Events" />
+  <meta property="og:description" content="Browse and share upcoming church events, worship services, and community gatherings." />
+  <meta property="og:image" content="https://your-church-domain.com/og-image.jpg" />
+  <meta property="og:url" content="https://your-church-domain.com/" />
+  <meta property="og:site_name" content="Church Event Planner" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Church Event Planner" />
+  <meta name="twitter:description" content="Browse upcoming church events, worship services, and community gatherings." />
+  <meta name="twitter:image" content="https://your-church-domain.com/og-image.jpg" />
+
+  <!-- Voice search / local SEO -->
+  <meta name="geo.region" content="US" />
+  <meta name="geo.placename" content="Your City, State" />
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Church",
+    "name": "Your Church Name",
+    "url": "https://your-church-domain.com",
+    "description": "A welcoming church community offering worship services, youth programs, and community events.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Church Street",
+      "addressLocality": "Your City",
+      "addressRegion": "State",
+      "postalCode": "00000",
+      "addressCountry": "US"
+    },
+    "telephone": "+1-000-000-0000",
+    "openingHours": "Su 09:00-12:00"
+  }
+  </script>
+
+  <!-- Structured Data: Events injected dynamically by app.js into #jsonld-events -->
+  <script type="application/ld+json" id="jsonld-events">[]</script>
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -13,7 +62,7 @@
         <span class="logo-icon">✝</span>
         <div>
           <h1>Church Event Planner</h1>
-          <p>Fasemkye-powered scheduler</p>
+          <p>Fasemkye powered scheduling &amp; outreach</p>
         </div>
       </div>
       <div class="header-actions">
@@ -28,77 +77,77 @@
     </div>
   </header>
 
-  <nav class="tabs">
+  <nav class="tabs" role="navigation" aria-label="Main navigation">
     <button class="tab active" data-tab="dashboard">Dashboard</button>
     <button class="tab" data-tab="events">Events</button>
     <button class="tab" data-tab="reminders">Reminders</button>
     <button class="tab" data-tab="invitations">Invitations</button>
+    <button class="tab" data-tab="calendar">📅 2026 Calendar</button>
+    <button class="tab admin-only hidden" data-tab="admin">🎬 Admin</button>
   </nav>
 
   <main>
     <!-- Dashboard -->
-    <section id="dashboard" class="tab-content active">
+    <section id="dashboard" class="tab-content active" aria-label="Dashboard">
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-icon">📅</span>
-          <div>
-            <div class="stat-value" id="statTotal">0</div>
-            <div class="stat-label">Total Events</div>
-          </div>
+          <div><div class="stat-value" id="statTotal">0</div><div class="stat-label">Total Events</div></div>
         </div>
         <div class="stat-card">
           <span class="stat-icon">🔔</span>
-          <div>
-            <div class="stat-value" id="statReminders">0</div>
-            <div class="stat-label">Reminders Set</div>
-          </div>
+          <div><div class="stat-value" id="statReminders">0</div><div class="stat-label">Reminders Set</div></div>
         </div>
         <div class="stat-card">
           <span class="stat-icon">📨</span>
-          <div>
-            <div class="stat-value" id="statInvites">0</div>
-            <div class="stat-label">Invitations Sent</div>
-          </div>
+          <div><div class="stat-value" id="statInvites">0</div><div class="stat-label">Invitations Sent</div></div>
         </div>
         <div class="stat-card">
           <span class="stat-icon">⚠️</span>
-          <div>
-            <div class="stat-value" id="statConflicts">0</div>
-            <div class="stat-label">Conflicts Detected</div>
-          </div>
+          <div><div class="stat-value" id="statConflicts">0</div><div class="stat-label">Conflicts Detected</div></div>
         </div>
       </div>
-
       <div class="section-title">Upcoming Events</div>
       <div id="upcomingEvents" class="events-list"></div>
+
+      <!-- Sermon Shots Video (shown when admin has uploaded one) -->
+      <div id="sermonShotsVideoSection" class="ss-video-section hidden">
+        <div class="section-title" style="margin-top:32px;">🎬 Sermon Shots Guide</div>
+        <p class="section-desc">Watch how to turn your weekly content ideas into stunning visuals.</p>
+        <div id="sermonShotsVideoPlayer" class="ss-video-player"></div>
+      </div>
     </section>
 
     <!-- Events -->
-    <section id="events" class="tab-content">
+    <section id="events" class="tab-content" aria-label="All events">
       <div class="toolbar">
-        <input type="text" id="searchEvents" placeholder="Search events..." class="search-input" />
-        <select id="filterCategory" class="select-input">
+        <div class="search-wrapper">
+          <input type="text" id="searchEvents" placeholder="Search events..." class="search-input" aria-label="Search events" autocomplete="off" />
+          <button class="voice-btn" id="voiceSearchBtn" title="Search by voice" aria-label="Voice search">🎤</button>
+        </div>
+        <select id="filterCategory" class="select-input" aria-label="Filter by category">
           <option value="">All Categories</option>
         </select>
       </div>
+      <div id="voiceStatus" class="voice-status hidden"></div>
       <div id="eventsList" class="events-list"></div>
     </section>
 
     <!-- Reminders -->
-    <section id="reminders" class="tab-content">
-      <div class="section-title">enerated Reminder Schedules</div>
+    <section id="reminders" class="tab-content" aria-label="Reminders">
+      <div class="section-title">Generated Reminder Schedules</div>
       <p class="section-desc">Select an event to view its smart reminder schedule.</p>
-      <select id="reminderEventSelect" class="select-input full-width"></select>
+      <select id="reminderEventSelect" class="select-input full-width" aria-label="Select event for reminders"></select>
       <div id="reminderSchedule" class="reminder-schedule"></div>
     </section>
 
     <!-- Invitations -->
-    <section id="invitations" class="tab-content">
+    <section id="invitations" class="tab-content" aria-label="Invitations">
       <div class="section-title">Invitation Composer</div>
       <p class="section-desc">Generate personalized invitations for any event.</p>
       <div class="invitation-controls">
-        <select id="inviteEventSelect" class="select-input"></select>
-        <select id="inviteStyle" class="select-input">
+        <select id="inviteEventSelect" class="select-input" aria-label="Select event"></select>
+        <select id="inviteStyle" class="select-input" aria-label="Invitation style">
           <option value="formal">Formal</option>
           <option value="casual">Casual</option>
           <option value="sms">SMS / Short</option>
@@ -113,7 +162,85 @@
         <pre id="invitationText"></pre>
       </div>
     </section>
+    <!-- 2026 Calendar (Public) -->
+    <section id="calendar" class="tab-content" aria-label="2026 Content Calendar">
+      <div class="cal-hero">
+        <div class="cal-hero-text">
+          <h2>Full 2026 Church Content Calendar</h2>
+          <p>52 weeks of post ideas, key dates, Scripture-based themes, and Sermon Shots tips — ready to download and use all year long.</p>
+          <div class="cal-hero-actions">
+            <button class="btn btn-primary" id="downloadCalBtn">⬇ Download Calendar (CSV)</button>
+          </div>
+        </div>
+        <div class="cal-hero-icon">📅</div>
+      </div>
+
+      <!-- Filter -->
+      <div class="cal-toolbar">
+        <select id="calMonthFilter" class="select-input">
+          <option value="">All Months</option>
+        </select>
+        <input type="text" id="calSearch" class="search-input" placeholder="Search themes, scriptures, ideas..." />
+      </div>
+
+      <!-- Calendar grid -->
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </section>
+
+    <!-- Admin Panel (Admin Only) -->
+    <section id="admin" class="tab-content" aria-label="Admin Panel">
+      <div class="admin-hero">
+        <div>
+          <div class="cal-badge" style="background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.4);">Admin Only</div>
+          <h2>Sermon Shots Video Guide</h2>
+          <p>Upload or link a Sermon Shots tutorial video. It will appear on the homepage for everyone to watch.</p>
+        </div>
+        <div style="font-size:3rem;opacity:0.3;">🎬</div>
+      </div>
+
+      <div class="admin-video-upload">
+        <div class="section-title">Video Source</div>
+        <p class="section-desc">Paste a YouTube or Vimeo URL, or enter a direct video file URL.</p>
+        <div class="video-upload-controls">
+          <input type="url" id="videoUrlInput" class="search-input" placeholder="https://www.youtube.com/watch?v=... or https://vimeo.com/..." />
+          <button class="btn btn-primary" id="saveVideoBtn">Save &amp; Publish</button>
+          <button class="btn btn-secondary" id="removeVideoBtn">Remove Video</button>
+        </div>
+        <div id="videoPreview" class="video-preview hidden">
+          <div class="section-title" style="margin-top:20px;">Preview</div>
+          <div id="videoPreviewPlayer" class="ss-video-player"></div>
+        </div>
+      </div>
+
+      <!-- Sermon Shots Tips Guide -->
+      <div class="admin-ss-guide">
+        <div class="ss-header" style="margin-bottom:20px;">
+          <span class="ss-icon">🎬</span>
+          <div>
+            <div class="ss-title">Sermon  Tips</div>
+            <div class="ss-desc">weekly Messages</div>
+          </div>
+        </div>
+        <div id="sermonShotsTips" class="ss-tips-grid"></div>
+      </div>
+    </section>
   </main>
+
+  <!-- Map Modal -->
+  <div id="mapModal" class="modal hidden">
+    <div class="modal-overlay" id="mapOverlay"></div>
+    <div class="modal-content map-modal-content">
+      <div class="modal-header">
+        <h2 id="mapModalTitle">Event Location</h2>
+        <button class="modal-close" id="closeMapModal">&times;</button>
+      </div>
+      <div id="mapContainer" class="map-container"></div>
+      <div class="map-actions">
+        <a id="directionsLink" href="#" target="_blank" rel="noopener" class="btn btn-primary">🗺 Get Directions</a>
+        <a id="mapsSearchLink" href="#" target="_blank" rel="noopener" class="btn btn-outline">🔍 Search on Google Maps</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Event Modal -->
   <div id="eventModal" class="modal hidden">
@@ -159,20 +286,22 @@
             </select>
           </div>
           <div class="form-group full">
+            <label>Address / Location</label>
+            <input type="text" id="eventAddress" placeholder="123 Church St, City, State" />
+          </div>
+          <div class="form-group full">
             <label>Description</label>
             <textarea id="eventDescription" rows="3" placeholder="Brief description of the event..."></textarea>
           </div>
         </div>
-
         <div id="aiSuggestions" class="ai-suggestions hidden">
-          <div class="ai-label">🤖 Suggestions</div>
+          <div class="ai-label">🤖 Schedule Suggestions</div>
           <div id="conflictWarning" class="conflict-warning hidden"></div>
           <div id="timeSuggestions" class="time-suggestions hidden">
             <p>Available time slots for this venue:</p>
             <div id="slotButtons" class="slot-buttons"></div>
           </div>
         </div>
-
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button>
           <button type="button" class="btn btn-outline" id="checkConflictsBtn">Check Conflicts</button>
@@ -190,8 +319,6 @@
         <button class="auth-tab active" data-auth="signin">Sign In</button>
         <button class="auth-tab" data-auth="signup">Sign Up</button>
       </div>
-
-      <!-- Sign In -->
       <form id="signInForm" class="auth-form">
         <div class="auth-header">
           <span class="auth-icon">🔐</span>
@@ -209,8 +336,6 @@
         <div id="siError" class="auth-error hidden"></div>
         <button type="submit" class="btn btn-primary full-width">Sign In</button>
       </form>
-
-      <!-- Sign Up -->
       <form id="signUpForm" class="auth-form hidden">
         <div class="auth-header">
           <span class="auth-icon">✝</span>
@@ -232,7 +357,6 @@
         <div id="suError" class="auth-error hidden"></div>
         <button type="submit" class="btn btn-primary full-width">Create Account</button>
       </form>
-
       <button class="modal-close auth-close" id="closeAuthModal">&times;</button>
     </div>
   </div>
